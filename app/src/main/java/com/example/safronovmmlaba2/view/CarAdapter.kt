@@ -1,12 +1,9 @@
 package com.example.safronovmmlaba2.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.safronovmmlaba2.R
+import com.example.safronovmmlaba2.databinding.ItemCarBinding
 import com.example.safronovmmlaba2.model.Car
 
 class CarAdapter(
@@ -15,21 +12,22 @@ class CarAdapter(
     private val onDeleteClick: (Car) -> Unit
 ) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
 
-    inner class CarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val brandText: TextView = itemView.findViewById(R.id.brandTextView)
-        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
-    }
+    inner class CarViewHolder(val binding: ItemCarBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_car, parent, false)
-        return CarViewHolder(view)
+        val binding = ItemCarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CarViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CarViewHolder, position: Int) {
         val car = cars[position]
-        holder.brandText.text = car.brand
-        holder.itemView.setOnClickListener { onItemClick(car) }
-        holder.deleteButton.setOnClickListener { onDeleteClick(car) }
+
+        // Установка данных
+        holder.binding.brandTextView.text = car.brand
+
+        // Обработка нажатий
+        holder.binding.root.setOnClickListener { onItemClick(car) }
+        holder.binding.deleteButton.setOnClickListener { onDeleteClick(car) }
     }
 
     override fun getItemCount(): Int = cars.size

@@ -3,11 +3,10 @@ package com.example.safronovmmlaba2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.safronovmmlaba2.databinding.ActivityMainBinding
 import com.example.safronovmmlaba2.model.Car
 import com.example.safronovmmlaba2.model.CarRepository
 import com.example.safronovmmlaba2.presenter.CarListPresenter
@@ -15,11 +14,11 @@ import com.example.safronovmmlaba2.view.AddCarActivity
 import com.example.safronovmmlaba2.view.CarAdapter
 import com.example.safronovmmlaba2.view.CarDetailsActivity
 import com.example.safronovmmlaba2.view.CarListView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity(), CarListView {
     private lateinit var presenter: CarListPresenter
     private lateinit var adapter: CarAdapter
+    private lateinit var binding: ActivityMainBinding // Инициализация View Binding
 
     companion object {
         private const val EDIT_CAR_REQUEST_CODE = 1
@@ -28,7 +27,10 @@ class MainActivity : AppCompatActivity(), CarListView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        // Инициализация View Binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Инициализация Presenter
         val repository = CarRepository()
@@ -40,13 +42,13 @@ class MainActivity : AppCompatActivity(), CarListView {
         presenter.loadCars()
 
         // Обработка нажатия кнопки добавления автомобиля
-        findViewById<FloatingActionButton>(R.id.addButton).setOnClickListener {
+        binding.addButton.setOnClickListener {
             val intent = Intent(this, AddCarActivity::class.java)
             startActivityForResult(intent, ADD_CAR_REQUEST_CODE)
         }
 
         // Обработка нажатия кнопки очистки списка
-        findViewById<Button>(R.id.clearButton).setOnClickListener {
+        binding.clearButton.setOnClickListener {
             presenter.clearCars()
         }
     }
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity(), CarListView {
             onItemClick = { car -> showCarDetails(car) },
             onDeleteClick = { car -> presenter.removeCar(car) }
         )
-        findViewById<RecyclerView>(R.id.recyclerView).apply {
+        binding.recyclerView.apply { // Использование binding для доступа к RecyclerView
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = this@MainActivity.adapter
         }
@@ -93,5 +95,4 @@ class MainActivity : AppCompatActivity(), CarListView {
             }
         }
     }
-
 }
